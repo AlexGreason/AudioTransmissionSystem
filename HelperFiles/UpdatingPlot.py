@@ -54,3 +54,7 @@ class UpdatingPlot:
         self.ax.relim()
         self.ax.autoscale_view()
         self.fig.canvas.draw()
+
+    def close(self):
+        print("closing window")
+        plt.close("all")

@@ -27,7 +27,9 @@ class DSink:
         try:
             message = self.recq.get(timeout=0.02)
             if message[1]["type"] == "terminate":
+                print("terminating data sink")
                 self.terminate = True
+                self.plot.close()
                 return False
             if message[1]["type"] == "new data":
                 signalnum = message[1]["data"]["signalnum"]

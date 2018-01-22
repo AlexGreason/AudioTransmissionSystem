@@ -27,7 +27,7 @@ playq = mp.Queue(maxsize=config["playbuffer"])
 playercontrolq = mp.Queue()
 
 Hub = AHub(sgrecq, signalq, dgenq, dsinkq, args, config)
-Rec = RProc(sgrecq, signalq, args)
+Rec = RProc(sgrecq, signalq, config)
 Sink = DSink(dsinkq, config)
 Play = PlayProc(playercontrolq, playq, config)
 SGen = BSG(sgrecq, playq, args, config)
@@ -38,7 +38,7 @@ SProc = mp.Process(target=Sink.main)
 PProc = mp.Process(target=Play.main)
 SGProc = mp.Process(target=SGen.main)
 
-termqs = [sgrecq, playrecq, dsinkq, playercontrolq]
+termqs = [sgrecq, sgrecq, playrecq, dsinkq, playercontrolq]
 time.sleep(0.1)
 
 PProc.start()
@@ -48,16 +48,20 @@ AProc.start()
 SProc.start()
 os.system("taskset -p -c %d %d" % (0, PProc.pid))
 os.system("taskset -p -c %d %d" % (0, SGProc.pid))
+cpucount = mp.cpu_count()
+affinity_string = ",".join([str(i) for i in range(1, cpucount)])
 for x in [RecProc, AProc, SProc]:
-    os.system("taskset -p -c 1,2,3 %d" % x.pid)
+    os.system("taskset -p -c %s %d" % (affinity_string, x.pid))
 
-dgenq.put([None, {"signals": [-1, 0, 1]}])
+dgenq.put([None, {"signals": [0, 1]}])
 
 
 def terminate():
     print("terminating")
     for q in termqs:
         q.put([None, {"type": "terminate"}])
+    time.sleep(0.2)
+    print("waited")
 
 
 atexit.register(terminate)
