@@ -1,6 +1,11 @@
 
 
 class DGen:
+    """
+    Data Generator. Determines what signal should be sent and what signals should be searched for, based on configuration
+    and results from Analysis Hub. Currently, if transmitting, reads bits from a file and, if receiving, adds two
+    to the received signal to create acknowledging signal.
+    """
 
     def __init__(self, recq, sendq, sgenq, args, config):
         self.AHubRec = recq

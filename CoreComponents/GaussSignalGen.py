@@ -4,7 +4,15 @@ from queue import Empty, Full
 import time
 import multiprocessing as mp
 
+
 class GaussSignalGen:
+    """
+    A signal generator which produces gaussian white noise from a specified seed.
+    If seed is negative, produces a repeating signal from that seed. This is used
+    for the initial transmission and acknowledgement thereof, as otherwise if the receiver was started well
+    after the transmitter began transmitting the receiver's analysis window would need to be at least as large
+    as the time between transmission starting and reception starting.
+    """
 
     def __init__(self, recq, sendq, args, config):
         self.samplerate = config["fs"]

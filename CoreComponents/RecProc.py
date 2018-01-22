@@ -2,6 +2,10 @@ import pyaudio
 
 
 class RecProc:
+    """
+    Records sounds and places the recordings into ahubq
+    """
+
     def __init__(self, recq, ahubq, args, config):
         self.samplerate = config["fs"]
         self.CHUNK = config["CHUNK"]

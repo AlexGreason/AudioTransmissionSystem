@@ -3,6 +3,12 @@ import numpy as np
 
 
 class Convolver:
+    """
+    Allows iterative extension of the signal being searched and the template being searched for in a matched-filter
+    search. This is much faster than computing the full convolution every time if the signal and template are frequently
+    being extended by small amounts. Does not produce exactly the same results as a single convolve call due to
+    floating-point errors, but the results are close enough for this application.
+    """
 
     def __init__(self, sig, template):
         self.signal = sig

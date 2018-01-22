@@ -1,9 +1,11 @@
 import threading
 import time
-import logging
-import random
+
 
 class Logger:
+    """
+    A basic sorta-threadsafe logger used for debugging purposes
+    """
 
     def __init__(self, file):
         self.file = file

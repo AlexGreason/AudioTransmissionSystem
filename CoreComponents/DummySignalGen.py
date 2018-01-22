@@ -5,6 +5,10 @@ import time
 import multiprocessing as mp
 
 class DummySignalGen:
+    """
+    A signal generator which creates a single tone of a specified frequency and volume.
+    Used for testing purposes to verify smooth transmission.
+    """
 
     def __init__(self, recq, sendq, args, config):
         self.samplerate = config["fs"]

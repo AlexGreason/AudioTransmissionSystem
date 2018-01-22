@@ -1,4 +1,11 @@
 class AHub:
+    """
+    Analysis Hub. Creates analysis child processes to search for the signals specified by Data Generator, takes
+    in data from the recording process and distributes it to each child, determines if a signal has been received
+    and if so which one, and then sends that information to Data Generator. Intermittently sends results of analysis
+    so far to Data Sink for display and logging.
+    """
+
     def __init__(self, recq, recprocq, datagenq, sinkq, args, config):
         self.data = None
         self.recq = recq

@@ -1,6 +1,10 @@
-from CallBack import CallBack
 
 class TSystem:
+    """
+    Transmission System, creates and manages all other processes, loading configuration information from a file.
+    Currently unused and incomplete, pending stabilization of the rest of the program.
+    """
+
     def __init__(self):
         # note: not actual processes
         # wrapper classes which also expose queues in both directions to allow communications
@@ -30,8 +34,6 @@ class TSystem:
         # True if this is the transmitter, false if it the receiver, may take other values if I implement
         # bidirectional communication
 
-        self.callback = CallBack(0, "main thread")
-        # wrapper class, "leaves a name and number" : unique process ID, what type of process this is
 
     def main(self):
         """

@@ -3,6 +3,9 @@ from queue import Empty, Full
 from time import sleep, time
 
 class DSink:
+    """
+    Data sink. Plots results of analysis, and saves recieved data.
+    """
 
     def __init__(self, recq, args, config):
         self.plot = UP("Significance")

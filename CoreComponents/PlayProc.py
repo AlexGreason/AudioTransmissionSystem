@@ -2,6 +2,9 @@ import pyaudio
 
 
 class PlayProc:
+    """
+    Plays signals placed into sendq
+    """
 
     def __init__(self, recq, sendq, args, config):
         self.samplerate = config["fs"]

@@ -8,6 +8,7 @@ import struct
 import time
 from scipy.signal import savgol_filter
 
+
 def playData(data, samplerate):
     p = pyaudio.PyAudio()
     data = struct.pack('h' * len(data), *data)

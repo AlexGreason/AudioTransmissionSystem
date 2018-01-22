@@ -12,7 +12,7 @@ from GaussSignalGen import GaussSignalGen as BSG
 import os
 
 config = {"fs":20000, "CHUNK":1000, "playbuffer":4000, "Minimum Significance": 100, "Significance Factor": 100,
-          "aChild":("aChildBasic","aChildBasic", "createNew"),
+          "aChild":("AChildBasic","AChildBasic", "createNew"),
           "Signal Generator": ("GaussSignalGen", "GaussSignalGen", "createNew"),
           "Logger": Logger(open("logfile.txt", "w")), "start time": time.time(),
           "initial broadcast duration": 1000}
