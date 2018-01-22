@@ -6,7 +6,7 @@ class RecProc:
     Records sounds and places the recordings into ahubq
     """
 
-    def __init__(self, recq, ahubq, args, config):
+    def __init__(self, recq, ahubq, config):
         self.samplerate = config["fs"]
         self.CHUNK = config["CHUNK"]
         self.recq = recq
@@ -17,6 +17,7 @@ class RecProc:
         self.lastsample = 0
         self.numpackets = 0
 
+    # noinspection PyUnusedLocal
     def callback(self, in_data, frame_count, time_info, status):
         self.incompleteChunk += in_data
         if len(self.incompleteChunk) >= 2 * self.CHUNK:

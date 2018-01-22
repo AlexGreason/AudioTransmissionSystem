@@ -1,7 +1,6 @@
 import numpy as np
 import struct
 from queue import Empty, Full
-import time
 import multiprocessing as mp
 
 
@@ -28,12 +27,14 @@ class GaussSignalGen:
         self.currsample = 0
         self.volume = args["volume"]
 
-    def setstate(self, seed):
+    @staticmethod
+    def setstate(seed):
         return np.random.RandomState(np.array([seed]).astype(np.uint32)[0])
 
     def data(self):
         if self.seed >= -1 or self.lastval + self.CHUNK <= self.repeatduration:
-            data = self.state.random_integers(self.volume * -2**15,self.volume *  2**15-1, self.CHUNK).astype("int16")
+            data = self.state.random_integers(self.volume * -2 ** 15, self.volume * 2 ** 15 - 1, self.CHUNK).astype(
+                "int16")
             data = struct.pack('h' * len(data), *data)
             self.lastval += self.CHUNK
         else:
@@ -42,11 +43,13 @@ class GaussSignalGen:
             data = b''
             remaining = self.repeatduration - self.lastval
             if remaining != 0:
-                moredata = self.state.random_integers(self.volume * -2 ** 15, self.volume * 2 ** 15 - 1, remaining).astype(
+                moredata = self.state.random_integers(self.volume * -2 ** 15, self.volume * 2 ** 15 - 1,
+                                                      remaining).astype(
                     "int16")
                 data += struct.pack('h' * len(data), *moredata)
                 self.state = self.setstate(self.seed)
-            moredata = self.state.random_integers(self.volume * -2 ** 15, self.volume * 2 ** 15 - 1, self.CHUNK - remaining).astype(
+            moredata = self.state.random_integers(self.volume * -2 ** 15, self.volume * 2 ** 15 - 1,
+                                                  self.CHUNK - remaining).astype(
                 "int16")
             data += struct.pack('h' * len(data), *moredata)
             self.lastval = self.CHUNK - remaining
@@ -82,10 +85,10 @@ class GaussSignalGen:
                 print("Terminating Signal Gen!")
 
     @staticmethod
-    def createNew(seed, args, config):
+    def create_new(seed, args, config):
         recq = mp.Queue()
         sendq = mp.Queue(maxsize=config["playbuffer"])
-        sgen = GaussSignalGen(recq, sendq, {"seed":seed, "volume":args["volume"]}, config)
+        sgen = GaussSignalGen(recq, sendq, {"seed": seed, "volume": args["volume"]}, config)
         process = mp.Process(target=sgen.main)
         process.start()
         return sendq, recq

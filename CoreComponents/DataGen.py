@@ -1,13 +1,11 @@
-
-
 class DGen:
     """
-    Data Generator. Determines what signal should be sent and what signals should be searched for, based on configuration
-    and results from Analysis Hub. Currently, if transmitting, reads bits from a file and, if receiving, adds two
-    to the received signal to create acknowledging signal.
+    Data Generator. Determines what signal should be sent and what signals should be searched for, based on
+    configuration and results from Analysis Hub. Currently, if transmitting, reads bits from a file and, if receiving,
+    adds two to the received signal to create acknowledging signal.
     """
 
-    def __init__(self, recq, sendq, sgenq, args, config):
+    def __init__(self, recq, sendq, sgenq, args):
         self.AHubRec = recq
         self.AHubSend = sendq
         self.SGen = sgenq
@@ -37,21 +35,20 @@ class DGen:
         if self.transmitter:
             val = self.nextbit()
             signals = [2, 3]
-            if(self.lastrec != self.lastsent + 2):
+            if self.lastrec != self.lastsent + 2:
                 print("TRANSMISSION ERROR")
             self.lastsent = val
         else:
             val = self.lastrec + 2
             signals = [0, 1]
-        self.AHubSend.put([None, {"signals":signals}])
-        self.SGen.put([None, {"type":"new data", "seed":val}])
+        self.AHubSend.put([None, {"signals": signals}])
+        self.SGen.put([None, {"type": "new data", "seed": val}])
 
     def handle_messages(self):
         message = self.AHubRec.get()
         if message[1]["type"] == "terminate":
             self.terminate = True
-            self.SGen.put([None, {"type":"terminate"}])
+            self.SGen.put([None, {"type": "terminate"}])
             return False
         if message[1]["type"] == "new data":
             self.lastrec = message[1]["data"]
-

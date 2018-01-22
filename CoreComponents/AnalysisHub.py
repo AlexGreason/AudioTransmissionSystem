@@ -15,7 +15,8 @@ class AHub:
         self.sigthreshold = config["Minimum Significance"]
         self.sigfactor = config["Significance Factor"]
         childpackage, childclass, achild = config["aChild"]
-        self.aChild = vars(vars(__import__(childpackage, globals(), locals(), [achild], 0))[childclass])[achild].__func__
+        self.aChild = vars(vars(__import__(childpackage, globals(), locals(), [achild], 0))[childclass])[
+            achild].__func__
         # aChild is a function that takes a signal identifier
         # and creates and starts a process with an analysis child
         # searching for that signal, and returns a sendq and recq for that child
@@ -58,29 +59,29 @@ class AHub:
                         self.aResults[i][2] = True
                 # send current results
                 if newresults:
-                    self.sendData()
+                    self.send_data()
                 self.handle_messages()
                 # check if current analysis results are conclusive
-                self.conclusive = self.isConclusive()
+                self.conclusive = self.is_conclusive()
 
-    def isConclusive(self):
+    def is_conclusive(self):
         for val in self.aResults:
             if val[1] is None:
                 return False
         sigs = sorted(self.aResults, key=lambda x: x[1][1]["significance"], reverse=True)
         if sigs[0][1][1]["significance"] >= self.sigthreshold and \
-                        sigs[0][1][1]["significance"] >= sigs[1][1][1]["significance"] * self.sigfactor:
+                sigs[0][1][1]["significance"] >= sigs[1][1][1]["significance"] * self.sigfactor:
             val = sigs[0][1][1]["signalnum"]
             self.dataGen.put([None, {"type": "new data", "data": val}])
             self.dataSink.put([None, {"type": "recieved signal", "data": val}])
             return True
         return False
 
-    def sendData(self):
+    def send_data(self):
         for x in self.aResults:
             i, data, updated = x
             if data is not None and updated:
-                self.dataSink.put([None, {"type":"new data", "data":data[1]}])
+                self.dataSink.put([None, {"type": "new data", "data": data[1]}])
                 x[2] = False
 
     def handle_messages(self):

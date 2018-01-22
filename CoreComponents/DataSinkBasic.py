@@ -1,14 +1,15 @@
-from UpdatingPlot import UpdatingPlot as UP
-from queue import Empty, Full
-from time import sleep, time
+from UpdatingPlot import UpdatingPlot
+from queue import Empty
+from time import time
+
 
 class DSink:
     """
     Data sink. Plots results of analysis, and saves recieved data.
     """
 
-    def __init__(self, recq, args, config):
-        self.plot = UP("Significance")
+    def __init__(self, recq, config):
+        self.plot = UpdatingPlot("Significance")
         self.data = {}
         self.recq = recq
         self.terminate = False
@@ -50,7 +51,7 @@ class DSink:
         xs = []
         ys = []
         for signal in self.data:
-            #does not sort by signal number, colors do not necessarily correspond as intended
+            # does not sort by signal number, colors do not necessarily correspond as intended
             data = self.data[signal]
             valx = []
             valy = []
@@ -61,4 +62,3 @@ class DSink:
             ys.append(valy)
         if len(xs) != 0:
             self.plot.updateplot(xs, ys, multiplot=True)
-

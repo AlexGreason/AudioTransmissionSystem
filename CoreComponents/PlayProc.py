@@ -6,7 +6,7 @@ class PlayProc:
     Plays signals placed into sendq
     """
 
-    def __init__(self, recq, sendq, args, config):
+    def __init__(self, recq, sendq, config):
         self.samplerate = config["fs"]
         self.CHUNK = config["CHUNK"]
         self.recq = recq
@@ -15,7 +15,7 @@ class PlayProc:
         self.incompleteChunk = b''
         self.lastsample = 0
 
-
+    # noinspection PyUnusedLocal
     def callback(self, in_data, frame_count, time_info, status):
         data = self.incompleteChunk
         while len(data) < 2 * frame_count:
@@ -30,10 +30,10 @@ class PlayProc:
     def main(self):
         p = pyaudio.PyAudio()
         stream = p.open(format=pyaudio.paInt16,
-                             rate=self.samplerate,
-                             channels=1,
-                             output=True,
-                             stream_callback=self.callback)
+                        rate=self.samplerate,
+                        channels=1,
+                        output=True,
+                        stream_callback=self.callback)
         stream.start_stream()
         while not self.terminate:
             self.handle_messages()

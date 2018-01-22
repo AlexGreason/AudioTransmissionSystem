@@ -1,7 +1,7 @@
 import matplotlib
+import numpy as np
 matplotlib.use("tkagg")
 import matplotlib.pyplot as plt
-import numpy as np
 
 
 class UpdatingPlot:
@@ -20,10 +20,10 @@ class UpdatingPlot:
     def updateplotscatter(self, values, datalen, color=True):
         self.ax.cla()
         if color:
-            self.ax.scatter(values[0], values[1], c=[i//datalen for i in range(datalen * 2)], s=10)
+            self.ax.scatter(values[0], values[1], c=[i // datalen for i in range(datalen * 2)], s=10)
         else:
             self.ax.scatter(values[0], values[1], s=10)
-        #self.ax.relim()
+        # self.ax.relim()
         self.ax.autoscale_view()
         self.fig.canvas.draw()
 
@@ -39,7 +39,7 @@ class UpdatingPlot:
 
     def updateplot(self, xs, ys, multiplot=False):
         print("updating plot")
-        colors = ["r-", "b-", "g-", "k-","y-"]
+        colors = ["r-", "b-", "g-", "k-", "y-"]
         params = []
         if not multiplot:
             params = [xs, ys]

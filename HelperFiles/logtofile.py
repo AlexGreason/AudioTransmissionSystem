@@ -15,6 +15,6 @@ class Logger:
     def write_line(self, line):
         self.lock.acquire()
         try:
-            self.file.write(str(time.time() - self.starttime) +": " + line + "\n")
+            self.file.write(str(time.time() - self.starttime) + ": " + line + "\n")
         finally:
             self.lock.release()

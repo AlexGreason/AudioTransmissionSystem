@@ -34,7 +34,6 @@ class TSystem:
         # True if this is the transmitter, false if it the receiver, may take other values if I implement
         # bidirectional communication
 
-
     def main(self):
         """
         1. wait until time to send (immediately if transmitter, after first bit if receiver)
@@ -46,12 +45,8 @@ class TSystem:
             playProc might halt for a bit until signalGen catches up, that's fine
         """
 
-        last_data = self.transmitter
-
-        while self.dataSource.getResponse(self.callback, "has data"):  # checks if transmission is complete
-
-            self.handle_messages()
-            # goes through messages in self.callback and does whatever is needed
+        self.handle_messages()
+        # goes through messages in self.callback and does whatever is needed
 
     def handle_messages(self):
         pass

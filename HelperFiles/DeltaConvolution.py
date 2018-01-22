@@ -15,13 +15,11 @@ class Convolver:
         self.template = template[::-1]
         self.convolved = None
 
-
     def fft_convolve(self, dsignal, dtemplate):
         self.signal = np.concatenate((self.signal, dsignal), axis=0)
         self.template = np.concatenate((dtemplate[::-1], self.template), axis=0)
         self.convolved = signal.convolve(self.signal, self.template)
         return self.convolved
-
 
     def delta_convolve(self, dsignal, dtemplate):
         newsignal = np.concatenate((self.signal, dsignal), axis=0)
@@ -57,7 +55,7 @@ class Convolver:
         self.convolved = None
 
 if __name__ == "__main__":
-    sig = np.array([1])
+    signal = np.array([1])
     temp = np.array([0])
     C = Convolver(np.array([]), np.array([]))
     print(C.convolved)
@@ -65,4 +63,3 @@ if __name__ == "__main__":
     n = 370
     C.convolve(np.random.random_integers(-1000, 1000, n), np.random.random_integers(-1000, 1000, n))
     C.convolve(np.array([2, 5, 1]), np.array([1, 0, 7]))
-

@@ -1,8 +1,8 @@
 import numpy as np
 import struct
 from queue import Empty, Full
-import time
 import multiprocessing as mp
+
 
 class DummySignalGen:
     """
@@ -22,14 +22,15 @@ class DummySignalGen:
         self.lastval = 0
 
     def data(self):
-        #startval = np.arcsin(self.lastval)/(2 * np.pi * self.freq * self.CHUNK/self.samplerate)
-        xf = np.linspace(self.lastval + 1/self.CHUNK, self.lastval + 1 + 1/self.CHUNK, self.CHUNK)
+        # startval = np.arcsin(self.lastval)/(2 * np.pi * self.freq * self.CHUNK/self.samplerate)
+        xf = np.linspace(self.lastval + 1 / self.CHUNK, self.lastval + 1 + 1 / self.CHUNK, self.CHUNK)
         self.lastval = xf[-1]
-        data = np.sin(xf * 2 * np.pi * self.freq * self.CHUNK/self.samplerate)
-        #print(self.lastval, data[0], abs(self.lastval - data[0]))
-        #print(data[0], data[1], abs(data[0]- data[1]))
+        data = np.sin(xf * 2 * np.pi * self.freq * self.CHUNK / self.samplerate)
+        # print(self.lastval, data[0], abs(self.lastval - data[0]))
+        # print(data[0], data[1], abs(data[0]- data[1]))
 
-        #data = np.random.randint(0, 2, self.CHUNK)
+        # data = np.random.randint(0, 2, self.CHUNK)
+        # noinspection PyTypeChecker
         data = np.array(data * self.volume * ((2 ** 15) - 1), dtype="int16")
         data = struct.pack('h' * len(data), *data)
         return data
@@ -66,7 +67,10 @@ class DummySignalGen:
                     print("Terminating Signal Gen!")
 
     @classmethod
-    def createNew(cls, seed, config):
+    def create_new(cls, seed, config):
         recq = mp.Queue()
         sendq = mp.Queue()
-        sgen = cls(recq, sendq, {"seed":seed}, config)
+        sgen = cls(recq, sendq, {"seed": seed}, config)
+        process = mp.Process(target=sgen.main)
+        process.start()
+        return sendq, recq
