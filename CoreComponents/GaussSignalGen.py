@@ -84,7 +84,7 @@ class GaussSignalGen:
     @staticmethod
     def createNew(seed, args, config):
         recq = mp.Queue()
-        sendq = mp.Queue()
+        sendq = mp.Queue(maxsize=config["playbuffer"])
         sgen = GaussSignalGen(recq, sendq, {"seed":seed, "volume":args["volume"]}, config)
         process = mp.Process(target=sgen.main)
         process.start()
