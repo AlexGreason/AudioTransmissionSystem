@@ -9,6 +9,7 @@ from BinarySignalGen import BinarySignalGen as USG
 from PlayProc import PlayProc
 from RecProc import RecProc as RProc
 from logtofile import Logger
+from BidirectionalQueue import BQueue
 
 config = {"fs": 44100, "CHUNK": 1000, "playbuffer": 1000, "Minimum Significance": 6, "Significance Factor": 1.5,
           "aChild": ("AChildBasic", "AChildBasic", "create_new"),
@@ -21,7 +22,7 @@ signalq = mp.Queue()
 playrecq = mp.Queue()
 sgrecq = mp.Queue()
 dsinkq = mp.Queue()
-dgenq = mp.Queue()
+dgenq = BQueue()
 playq = mp.Queue(maxsize=config["playbuffer"])
 playercontrolq = mp.Queue()
 
@@ -52,7 +53,7 @@ affinity_string = ",".join([str(i) for i in range(1, cpucount)])
 for x in [RecProc, AProc, SProc]:
     os.system("taskset -p -c %s %d" % (affinity_string, x.pid))
 
-dgenq.put([None, {"signals": [0, 1]}])
+dgenq.send([None, {"signals": [0, 1]}])
 
 
 def terminate():

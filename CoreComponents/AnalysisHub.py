@@ -53,7 +53,7 @@ class AHub:
                 while not self.recProc.empty():
                     signal = self.recProc.get()
                     self.id += 1
-                    self.log("recieved packet number: " + str(self.id) + ", sending to children")
+                    self.log("AHub: recieved packet number: " + str(self.id) + ", sending to children")
                     for send, rec in self.aChildren:
                         send.put([None, {"type": "new data", "data": signal, "id": self.id}])
                 # get current analysis results (if more than one in queue, overwrites old, fix to allow plotting)
@@ -63,6 +63,8 @@ class AHub:
                         newresults = True
                         self.aResults[i][1] = rec.get()
                         self.aResults[i][2] = True
+                        self.log("AHub: got results back from child " + str(i) + " based on packets up to " + str(
+                            self.aResults[i][1][1]["latestdata"]))
                     else:
                         time.sleep(0.05)
                 # send current results

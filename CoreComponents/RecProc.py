@@ -24,7 +24,7 @@ class RecProc:
             self.numpackets += 1
             self.aHub.put(self.incompleteChunk[:2 * self.CHUNK])
             self.incompleteChunk = self.incompleteChunk[2 * self.CHUNK:]
-            self.log("sending packet " + str(self.numpackets) + " to analysis hub")
+            self.log("RecProc: sending packet " + str(self.numpackets) + " to analysis hub")
         return in_data, pyaudio.paContinue
 
     def main(self):

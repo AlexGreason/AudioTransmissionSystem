@@ -22,6 +22,7 @@ class AChildBasic:
         self.sGensend = sgensend
         self.data = b''
         self.template = b''
+        self.packetnum = 0
         self.starttime = config["start time"]
         self.terminate = False
         self.convolver = Convolver(np.array([]), np.array([]))
@@ -63,7 +64,7 @@ class AChildBasic:
         #if(self.seed == 0):
         #    self.plot.updateplot(range(len(significance)), significance)
         maxsig = np.max(significance)
-        result = {"significance": maxsig, "signalnum": self.seed, "time": time.time() - self.starttime}
+        result = {"significance": maxsig, "signalnum": self.seed, "time": time.time() - self.starttime, "latestdata":self.packetnum}
         self.sendq.put([None, result])
 
     def handle_messages(self):
@@ -75,6 +76,7 @@ class AChildBasic:
                 return 0
             if message[1]["type"] == "new data":
                 self.data += message[1]["data"]
+                self.packetnum = message[1]["id"]
                 return 1
         else:
             return 0
