@@ -1,22 +1,21 @@
-from RecProc import RecProc as RProc
 import atexit
 import multiprocessing as mp
+import os
 import time
 
 from AnalysisHub import AHub
 from DataSinkBasic import DSink
+from BinarySignalGen import BinarySignalGen as USG
+from PlayProc import PlayProc
 from RecProc import RecProc as RProc
 from logtofile import Logger
-from PlayProc import PlayProc
-from GaussSignalGen import GaussSignalGen as BSG
-import os
 
-config = {"fs": 10000, "CHUNK": 1000, "playbuffer": 1000, "Minimum Significance": 100, "Significance Factor": 100,
+config = {"fs": 44100, "CHUNK": 1000, "playbuffer": 1000, "Minimum Significance": 6, "Significance Factor": 1.5,
           "aChild": ("AChildBasic", "AChildBasic", "create_new"),
-          "Signal Generator": ("GaussSignalGen", "GaussSignalGen", "create_new"),
+          "Signal Generator": ("BinarySignalGen", "BinarySignalGen", "create_new"),
           "Logger": Logger(open("logfile.txt", "w")), "start time": time.time(),
-          "initial broadcast duration": 100}
-args = {"seed": 1, "transmitter": False, "volume": 0.5}
+          "initial broadcast duration": 1000}
+args = {"seed": 0, "transmitter": False, "volume":0.002}
 
 signalq = mp.Queue()
 playrecq = mp.Queue()
@@ -30,7 +29,7 @@ Hub = AHub(sgrecq, signalq, dgenq, dsinkq, args, config)
 Rec = RProc(sgrecq, signalq, config)
 Sink = DSink(dsinkq, config)
 Play = PlayProc(playercontrolq, playq, config)
-SGen = BSG(sgrecq, playq, args, config)
+SGen = USG(sgrecq, playq, args, config)
 
 RecProc = mp.Process(target=Rec.main)
 AProc = mp.Process(target=Hub.main)
@@ -53,7 +52,7 @@ affinity_string = ",".join([str(i) for i in range(1, cpucount)])
 for x in [RecProc, AProc, SProc]:
     os.system("taskset -p -c %s %d" % (affinity_string, x.pid))
 
-#dgenq.put([None, {"signals": [-1]}])
+dgenq.put([None, {"signals": [0, 1]}])
 
 
 def terminate():

@@ -4,13 +4,9 @@ from queue import Empty, Full
 import multiprocessing as mp
 
 
-class GaussSignalGen:
+class BinarySignalGen:
     """
-    A signal generator which produces gaussian white noise from a specified seed.
-    If seed is negative, produces a repeating signal from that seed. This is used
-    for the initial transmission and acknowledgement thereof, as otherwise if the receiver was started well
-    after the transmitter began transmitting the receiver's analysis window would need to be at least as large
-    as the time between transmission starting and reception starting.
+    A signal generator which produces random bits
     """
 
     def __init__(self, recq, sendq, args, config):
@@ -32,18 +28,10 @@ class GaussSignalGen:
         return np.random.RandomState(np.array([seed]).astype(np.uint32)[0])
 
     def data(self):
-        if self.seed >= 0:
-            data = self.state.random_integers(self.volume * -2 ** 15, self.volume * 2 ** 15 - 1, self.CHUNK).astype(
-                "int16")
-            data = struct.pack('h' * len(data), *data)
-            self.lastval += self.CHUNK
-        else:
-            # todo: DOES NOT HANDLE SHORT REPEAT DURATIONS PROPERLY
-            # REPEAT DURATION MUST BE AT LEAST CHUNK LENGTH
-            self.state = self.setstate(self.seed)
-            data = self.state.random_integers(self.volume * -2 ** 15, self.volume * 2 ** 15 - 1, self.CHUNK).astype(
-                "int16")
-            data = struct.pack('h' * len(data), *data)
+        data = ((self.state.random_integers(0, 1, self.CHUNK) * (2 ** 16 - 1) - 2**15) * self.volume).astype(
+            "int16")
+        data = struct.pack('h' * len(data), *data)
+        self.lastval += self.CHUNK
         return data
 
     def main(self):
@@ -79,7 +67,7 @@ class GaussSignalGen:
     def create_new(seed, args, config):
         recq = mp.Queue()
         sendq = mp.Queue(maxsize=config["playbuffer"])
-        sgen = GaussSignalGen(recq, sendq, {"seed": seed, "volume": args["volume"]}, config)
+        sgen = BinarySignalGen(recq, sendq, {"seed": seed, "volume": args["volume"]}, config)
         process = mp.Process(target=sgen.main)
         process.start()
         return sendq, recq

@@ -4,6 +4,7 @@ import numpy as np
 import multiprocessing as mp
 import time
 from DeltaConvolution import Convolver
+from UpdatingPlot import UpdatingPlot
 
 
 class AChildBasic:
@@ -24,6 +25,8 @@ class AChildBasic:
         self.starttime = config["start time"]
         self.terminate = False
         self.convolver = Convolver(np.array([]), np.array([]))
+        #if seed == 0:
+        #    self.plot = UpdatingPlot(str(seed))
 
     @staticmethod
     def create_new(seed, args, config):
@@ -57,6 +60,8 @@ class AChildBasic:
         convolved = self.convolver.convolve(data, template).astype(np.float64)
         convolved -= np.average(convolved)
         significance = convolved/np.std(convolved)
+        #if(self.seed == 0):
+        #    self.plot.updateplot(range(len(significance)), significance)
         maxsig = np.max(significance)
         result = {"significance": maxsig, "signalnum": self.seed, "time": time.time() - self.starttime}
         self.sendq.put([None, result])

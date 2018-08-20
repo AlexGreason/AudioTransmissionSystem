@@ -2,7 +2,7 @@ import atexit
 import multiprocessing as mp
 import time
 
-from GaussSignalGen import GaussSignalGen as Bsg
+from UniformSignalGen import UniformSignalGen as Bsg
 from PlayProc import PlayProc as PProc
 
 config = {"fs":44100, "CHUNK":1000, "playbuffer":100}

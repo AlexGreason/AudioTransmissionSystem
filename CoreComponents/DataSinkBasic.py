@@ -43,7 +43,7 @@ class DSink:
                     self.data[signalnum] = [(timestamp, significance)]
                 return True
             if message[1]["type"] == "recieved signal":
-                self.log("Recieved signal: " + message[1]["data"]["signalnum"])
+                print("Recieved signal: " + str(message[1]["data"]))
                 self.data = []
                 return True
         except Empty:

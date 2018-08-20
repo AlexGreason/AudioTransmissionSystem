@@ -38,7 +38,6 @@ class UpdatingPlot:
         self.fig.canvas.draw()
 
     def updateplot(self, xs, ys, multiplot=False):
-        print("updating plot")
         colors = ["r-", "b-", "g-", "k-", "y-"]
         params = []
         if not multiplot:
@@ -56,5 +55,4 @@ class UpdatingPlot:
         self.fig.canvas.draw()
 
     def close(self):
-        print("closing window")
         plt.close("all")
