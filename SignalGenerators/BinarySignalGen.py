@@ -28,10 +28,24 @@ class BinarySignalGen:
         return np.random.RandomState(np.array([seed]).astype(np.uint32)[0])
 
     def data(self):
-        data = ((self.state.random_integers(0, 1, self.CHUNK) * (2 ** 16 - 1) - 2**15) * self.volume).astype(
-            "int16")
-        data = struct.pack('h' * len(data), *data)
-        self.lastval += self.CHUNK
+        if self.seed >= -1 or self.lastval + self.CHUNK <= self.repeatduration:
+            data = ((self.state.random_integers(0, 1, self.CHUNK)  * (2 ** 16 - 1) - 2**15) * self.volume) .astype("int16")
+            data = struct.pack('h' * len(data), *data)
+            self.lastval += self.CHUNK
+        else:
+            # todo: DOES NOT HANDLE SHORT REPEAT DURATIONS PROPERLY
+            # REPEAT DURATION MUST BE AT LEAST CHUNK LENGTH
+            data = b''
+            remaining = self.repeatduration - self.lastval
+            if remaining != 0:
+                moredata = ((self.state.random_integers(0, 1, remaining)  * (2 ** 16 - 1) - 2**15) * self.volume).astype(
+                    "int16")
+                data += struct.pack('h' * len(data), *moredata)
+                self.state = self.setstate(self.seed)
+            moredata = ((self.state.random_integers(0, 1, self.CHUNK - remaining)  * (2 ** 16 - 1) - 2**15) * self.volume).astype(
+                "int16")
+            data += struct.pack('h' * len(data), *moredata)
+            self.lastval = self.CHUNK - remaining
         return data
 
     def main(self):

@@ -11,7 +11,7 @@ from RecProc import RecProc as RProc
 from logtofile import Logger
 from BidirectionalQueue import BQueue
 
-config = {"fs": 44100, "CHUNK": 1000, "playbuffer": 1000, "Minimum Significance": 6, "Significance Factor": 1.5,
+config = {"fs": 10000, "CHUNK": 1000, "playbuffer": 1000, "Minimum Significance": 6, "Significance Factor": 1.5,
           "aChild": ("AChildBasic", "AChildBasic", "create_new"),
           "Signal Generator": ("BinarySignalGen", "BinarySignalGen", "create_new"),
           "Logger": Logger(open("logfile.txt", "w")), "start time": time.time(),
