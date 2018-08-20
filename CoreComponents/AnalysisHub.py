@@ -1,3 +1,5 @@
+import time
+
 class AHub:
     """
     Analysis Hub. Creates analysis child processes to search for the signals specified by Data Generator, takes
@@ -57,6 +59,8 @@ class AHub:
                         newresults = True
                         self.aResults[i][1] = rec.get()
                         self.aResults[i][2] = True
+                    else:
+                        time.sleep(0.05)
                 # send current results
                 if newresults:
                     self.send_data()

@@ -11,12 +11,12 @@ from PlayProc import PlayProc
 from GaussSignalGen import GaussSignalGen as BSG
 import os
 
-config = {"fs": 20000, "CHUNK": 1000, "playbuffer": 1000, "Minimum Significance": 100, "Significance Factor": 100,
+config = {"fs": 10000, "CHUNK": 1000, "playbuffer": 1000, "Minimum Significance": 100, "Significance Factor": 100,
           "aChild": ("AChildBasic", "AChildBasic", "create_new"),
           "Signal Generator": ("GaussSignalGen", "GaussSignalGen", "create_new"),
           "Logger": Logger(open("logfile.txt", "w")), "start time": time.time(),
-          "initial broadcast duration": 1000}
-args = {"seed": -1, "transmitter": False, "volume": 0.05}
+          "initial broadcast duration": 100}
+args = {"seed": 1, "transmitter": False, "volume": 0.5}
 
 signalq = mp.Queue()
 playrecq = mp.Queue()
@@ -53,7 +53,7 @@ affinity_string = ",".join([str(i) for i in range(1, cpucount)])
 for x in [RecProc, AProc, SProc]:
     os.system("taskset -p -c %s %d" % (affinity_string, x.pid))
 
-dgenq.put([None, {"signals": [0, 1]}])
+#dgenq.put([None, {"signals": [-1]}])
 
 
 def terminate():
