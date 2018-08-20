@@ -30,14 +30,18 @@ class AHub:
         self.id = 0
 
     def main(self):
+        self.dataGen.invert()
         while not self.terminate:
             # get new data
             while self.dataGen.empty() and not self.terminate:
                 self.handle_messages()
-            self.data = self.dataGen.get()
+            self.data = self.dataGen.recieve()
+            #Only has one queue to the data generator, and currently both puts and removes items from it
+            # that's not going to work
             # destroy old children, create new ones (repurpose?)
             for send, rec in self.aChildren:
                 send.put([None, {"type": "terminate"}])
+            print("Data:" + str(self.data))
             self.aChildren = [self.aChild(x, self.args, self.config) for x in self.data[1]["signals"]]
             self.aResults = [[x, None, False] for x in range(len(self.aChildren))]
             # not-conclusive-yet loop
@@ -72,7 +76,8 @@ class AHub:
         if sigs[0][1][1]["significance"] >= self.sigthreshold and \
                 sigs[0][1][1]["significance"] >= sigs[1][1][1]["significance"] * self.sigfactor:
             val = sigs[0][1][1]["signalnum"]
-            self.dataGen.put([None, {"type": "new data", "data": val}])
+            print("Signal " + str(val) + " has reached significance")
+            self.dataGen.send([None, {"type": "new data", "data": val}])
             self.dataSink.put([None, {"type": "recieved signal", "data": val}])
             return True
         return False

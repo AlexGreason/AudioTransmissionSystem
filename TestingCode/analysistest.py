@@ -10,12 +10,12 @@ from PlayProc import PlayProc
 from RecProc import RecProc as RProc
 from logtofile import Logger
 
-config = {"fs": 10000, "CHUNK": 1000, "playbuffer": 1000, "Minimum Significance": 100, "Significance Factor": 100,
+config = {"fs": 44100, "CHUNK": 1000, "playbuffer": 1000, "Minimum Significance": 6, "Significance Factor": 1.5,
           "aChild": ("AChildBasic", "AChildBasic", "create_new"),
           "Signal Generator": ("BinarySignalGen", "BinarySignalGen", "create_new"),
           "Logger": Logger(open("logfile.txt", "w")), "start time": time.time(),
           "initial broadcast duration": 1000}
-args = {"seed": 0, "transmitter": False, "volume":1}
+args = {"seed": 0, "transmitter": False, "volume":0.002}
 
 signalq = mp.Queue()
 playrecq = mp.Queue()

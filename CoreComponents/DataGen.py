@@ -5,9 +5,8 @@ class DGen:
     adds two to the received signal to create acknowledging signal.
     """
 
-    def __init__(self, recq, sendq, sgenq, args):
-        self.AHubRec = recq
-        self.AHubSend = sendq
+    def __init__(self, ahubq, sgenq, args):
+        self.AHub = ahubq
         self.SGen = sgenq
         self.transmitter = args["transmitter"]
         self.datafile = open(args["data file"], "rb")
@@ -26,6 +25,7 @@ class DGen:
         return bit
 
     def main(self):
+        self.send_message()
         while not self.terminate:
             val = self.handle_messages()
             if val:
@@ -35,17 +35,17 @@ class DGen:
         if self.transmitter:
             val = self.nextbit()
             signals = [2, 3]
-            if self.lastrec != self.lastsent + 2:
+            if self.lastrec != self.lastsent + 2 and self.lastrec is not None:
                 print("TRANSMISSION ERROR")
-            self.lastsent = val
         else:
             val = self.lastrec + 2
             signals = [0, 1]
-        self.AHubSend.put([None, {"signals": signals}])
+        self.lastsent = val
+        self.AHub.send([None, {"signals": signals}])
         self.SGen.put([None, {"type": "new data", "seed": val}])
 
     def handle_messages(self):
-        message = self.AHubRec.get()
+        message = self.AHub.recieve()
         if message[1]["type"] == "terminate":
             self.terminate = True
             self.SGen.put([None, {"type": "terminate"}])
